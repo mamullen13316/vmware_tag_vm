@@ -1,0 +1,22 @@
+---
+- name: Add a tag to a VM in vCenter
+  hosts: vcenter
+  gather_facts: no
+
+  tasks:
+  - name: Get creds from vault
+    include_vars: ./creds.yml
+    no_log: true
+
+  - name: Add tags to a virtual machine
+    vmware_tag_manager:
+      hostname: '{{ inventory_hostname }}'
+      username: '{{ username }}'
+      password: '{{ password }}'
+      validate_certs: no
+      tag_names:
+        - '{{ tag }}'
+      object_name: '{{ vm_name }}'
+      object_type: VirtualMachine
+      state: add
+    delegate_to: localhost
